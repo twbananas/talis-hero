@@ -1,0 +1,29 @@
+name: Rename desktop-7 frames (4-digit -> 3-digit)
+on: workflow_dispatch
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Strip leading zero from Frame numbers in desktop-7
+        run: |
+          shopt -s nullglob
+          cd desktop-7
+          for f in Frame[0-9][0-9][0-9][0-9].*; do
+            name="${f%.*}"                          # e.g. Frame0001
+            ext="${f##*.}"                          # e.g. webp / jpg
+            num="${name#Frame}"                     # e.g. 0001
+            newnum=$(printf '%03d' "$((10#$num))")  # 0001 -> 001
+            new="Frame${newnum}.${ext}"
+            if [ "$f" != "$new" ]; then
+              git mv -f "$f" "$new"
+            fi
+          done
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+          git commit -m "Rename desktop-7 frames: strip leading zero (4->3 digits)" || echo "Nothing to commit"
+          git push
