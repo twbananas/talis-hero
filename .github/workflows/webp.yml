@@ -12,7 +12,7 @@ jobs:
       - name: Install WebP tools
         run: sudo apt-get update && sudo apt-get install -y webp
 
-      - name: Convert JPGs and PNGs in desktop11, mobile, Mobile8
+      - name: Convert JPGs and PNGs in desktop11, desktop12, mobile, Mobile8, mobile12
         run: |
           find desktop11 mobile Mobile8 mobile11 -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' \) -print0 \
           | while IFS= read -r -d '' f; do
