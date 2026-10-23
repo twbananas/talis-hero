@@ -1,0 +1,24 @@
+name: Rename mobile14 frames
+on:
+  push:
+    paths:
+      - .github/workflows/rename-mobile14.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mobile### -> Frame###
+        run: |
+          shopt -s nullglob
+          cd mobile14
+          for f in Mobile*; do git mv "$f" "Frame${f#Mobile}"; done
+          cd ..
+          git config user.name "github-actions[bot]"
+          git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Rename mobile14 frames Mobile### -> Frame###"
+          git pull --rebase
+          git push
